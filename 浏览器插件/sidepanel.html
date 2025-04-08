@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DeepSeek助手</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>DeepSeek助手</h1>
+    
+    <div class="tabs">
+      <div id="translateTab" class="tab active">翻译文本</div>
+      <div id="summaryTab" class="tab">页面总结</div>
+    </div>
+    
+    <div id="translatePanel" class="panel active">
+      <label for="originalText">原文:</label>
+      <textarea id="originalText" placeholder="请输入或粘贴要翻译的文本"></textarea>
+      
+      <label for="translateDirection">翻译方向:</label>
+      <select id="translateDirection">
+        <option value="auto">自动检测</option>
+        <option value="zh2en">中文 → 英文</option>
+        <option value="en2zh">英文 → 中文</option>
+      </select>
+      
+      <label for="translatedText">译文:</label>
+      <textarea id="translatedText" readonly placeholder="翻译结果将显示在这里"></textarea>
+      
+      <div class="btn-container">
+        <button id="translateBtn" class="btn btn-primary">翻译</button>
+        <button id="copyTranslateBtn" class="btn btn-secondary">复制结果</button>
+      </div>
+    </div>
+    
+    <div id="summaryPanel" class="panel">
+      <div class="summary-length">
+        <div id="shortSummary" class="length-btn active">简短</div>
+        <div id="mediumSummary" class="length-btn">中等</div>
+        <div id="longSummary" class="length-btn">详细</div>
+      </div>
+      
+      <label for="summaryText">页面总结:</label>
+      <textarea id="summaryText" readonly placeholder="页面总结将显示在这里"></textarea>
+      
+      <div class="btn-container">
+        <button id="summarizeBtn" class="btn btn-primary">生成总结</button>
+        <button id="regenerateBtn" class="btn btn-secondary">重新生成</button>
+        <button id="copySummaryBtn" class="btn btn-secondary">复制结果</button>
+      </div>
+    </div>
+    
+    <div class="api-key-section">
+      <label for="apiKey">DeepSeek API密钥:</label>
+      <input type="password" id="apiKey" class="api-key-input" placeholder="请输入您的DeepSeek API密钥">
+      <button id="saveApiKey" class="btn btn-primary">保存</button>
+    </div>
+    
+    <div id="status" class="status"></div>
+  </div>
+  
+  <script src="sidepanel.js"></script>
+</body>
+</html> 

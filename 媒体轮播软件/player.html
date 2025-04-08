@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>媒体播放</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      width: 100vw;
+    }
+    
+    .player-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    
+    video {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+    }
+    
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    
+    .weather-container {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      font-family: Arial, sans-serif;
+      z-index: 100;
+    }
+    
+    /* 播放控制面板样式 */
+    .control-panel {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      z-index: 200;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .player-container:hover .control-panel {
+      opacity: 1;
+    }
+    
+    .control-panel .progress-container {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    
+    .control-panel .progress-bar {
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 5px;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .control-panel .progress {
+      height: 100%;
+      background: #ff0000;
+      border-radius: 5px;
+      width: 0%;
+    }
+    
+    .control-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .control-buttons .left-controls {
+      display: flex;
+      align-items: center;
+    }
+    
+    .control-buttons .right-controls {
+      display: flex;
+      align-items: center;
+    }
+    
+    .control-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      margin: 0 5px;
+      cursor: pointer;
+      padding: 5px;
+    }
+    
+    .volume-container {
+      display: flex;
+      align-items: center;
+      width: 120px;
+      margin-right: 15px;
+    }
+    
+    .volume-slider {
+      width: 70px;
+      height: 5px;
+      -webkit-appearance: none;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 5px;
+      outline: none;
+      margin-left: 5px;
+    }
+    
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    
+    .time-display {
+      font-size: 14px;
+      color: white;
+      margin: 0 10px;
+    }
+    
+    .playback-rate-container {
+      position: relative;
+      margin-right: 15px;
+    }
+    
+    .playback-rate-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 5px 8px;
+    }
+    
+    .rate-options {
+      position: absolute;
+      bottom: 100%;
+      right: 0;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 5px;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .rate-option {
+      padding: 5px 10px;
+      color: white;
+      cursor: pointer;
+    }
+    
+    .rate-option:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .fullscreen-btn {
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="player-container" id="player-container">
+    <!-- 控制面板将在视频播放时添加 -->
+  </div>
+
+  <script>
+    const { ipcRenderer } = require('electron');
+    const fs = require('fs');
+    
+    let mediaElement = null;
+    let playTimer = null;
+    let mediaData = null;
+    let progressInterval = null;
+    let currentPlaybackRate = 1.0;
+    let isEndEventSent = false; // 标记是否已发送结束事件
+    
+    // 显示调试信息
+    function showDebug(msg) {
+      const debugEl = document.getElementById('debug-info');
+      if (debugEl) {
+        debugEl.textContent = msg;
+      }
+      console.log('调试信息:', msg);
+    }
+    
+    // 监听播放媒体命令
+    ipcRenderer.on('play-media', (event, data) => {
+      console.log('Received play command', data);
+      mediaData = data;
+      playMedia(data);
+    });
+    
+    // 监听暂停命令
+    ipcRenderer.on('toggle-pause', () => {
+      if (mediaElement && mediaElement.tagName === 'VIDEO') {
+        if (mediaElement.paused) {
+          mediaElement.play();
+        } else {
+          mediaElement.pause();
+        }
+      }
+    });
+    
+    // 播放媒体
+    function playMedia(data) {
+      try {
+        console.log('开始播放媒体:', data.media.fileName);
+        console.log('媒体数据详情:', JSON.stringify(data));
+        
+        // 清除旧的计时器和标记
+        clearAllTimers();
+        isEndEventSent = false;
+        
+        // 记录媒体数据
+        mediaData = data;
+        
+        // 检查文件是否存在
+        if (!fs.existsSync(data.media.filePath)) {
+          throw new Error(`媒体文件不存在: ${data.media.filePath}`);
+        }
+        
+        // 清空容器
+        const container = document.getElementById('player-container');
+        container.innerHTML = '';
+        
+        // 创建媒体元素
+        if (data.media.type === 'video') {
+          console.log('创建视频元素:', data.media.fileName);
+          
+          mediaElement = document.createElement('video');
+          mediaElement.src = data.media.filePath;
+          mediaElement.autoplay = true;
+          mediaElement.controls = false; // 不显示原生控件
+          mediaElement.style.width = '100%';
+          mediaElement.style.height = '100%';
+          mediaElement.style.objectFit = 'contain'; // 保持宽高比
+          
+          // 添加媒体加载错误处理
+          mediaElement.onerror = (e) => {
+            console.error('视频加载错误:', e.target.error ? e.target.error.message : '未知错误');
+            sendEndEvent();
+          };
+          
+          // 添加到容器
+          container.appendChild(mediaElement);
+          
+          // 创建并添加控制面板
+          createControlPanel(container);
+          
+          // 监听视频加载事件，获取真实时长
+          mediaElement.addEventListener('loadedmetadata', function() {
+            const videoDuration = Math.floor(mediaElement.duration);
+            console.log(`视频已加载，时长: ${videoDuration}秒，配置的时长: ${data.media.duration || '完整播放'}秒`);
+            
+            // 开始更新进度条
+            startProgressUpdate();
+            
+            // 如果设置了自定义时长（>0），则使用自定义时长
+            if (data.media.duration && data.media.duration > 0) {
+              console.log(`使用配置的播放时长: ${data.media.duration}秒`);
+              // 设置定时器在指定时长后结束视频
+              playTimer = setTimeout(() => {
+                console.log('到达指定播放时长，结束播放');
+                sendEndEvent();
+              }, data.media.duration * 1000);
+            } else {
+              // 完整播放模式 - 不设置定时器，让视频播放到自然结束
+              console.log('完整播放模式，将播放到视频结束');
+            }
+          });
+          
+          // 监听播放开始事件
+          mediaElement.addEventListener('playing', () => {
+            console.log(`视频开始播放: ${data.media.fileName}`);
+          });
+          
+          // 监听视频结束事件
+          mediaElement.addEventListener('ended', () => {
+            console.log('视频自然结束');
+            if (playTimer) {
+              clearTimeout(playTimer);
+              playTimer = null;
+            }
+            sendEndEvent();
+          });
+          
+        } else { // 图片
+          console.log(`创建图片元素: ${data.media.fileName}`);
+          
+          mediaElement = document.createElement('img');
+          mediaElement.src = data.media.filePath;
+          mediaElement.style.width = '100%';
+          mediaElement.style.height = '100%';
+          mediaElement.style.objectFit = 'contain'; // 保持宽高比
+          
+          // 添加到容器
+          container.appendChild(mediaElement);
+          
+          // 图片加载完成
+          mediaElement.onload = () => {
+            console.log(`图片加载完成: ${data.media.fileName}`);
+          };
+          
+          // 图片加载错误
+          mediaElement.onerror = () => {
+            console.error(`图片加载错误: ${data.media.fileName}`);
+            sendEndEvent();
+          };
+          
+          // 图片必须设置显示时长，至少10秒
+          const duration = data.media.duration && data.media.duration >= 10 ? data.media.duration : 10;
+          console.log(`图片显示时长: ${duration}秒`);
+          
+          // 图片显示指定时间后结束
+          playTimer = setTimeout(() => {
+            console.log('图片显示时间到，结束显示');
+            sendEndEvent();
+          }, duration * 1000);
+        }
+        
+        // 应用亮度
+        if (data.config && data.config.screen) {
+          mediaElement.style.filter = `brightness(${data.config.screen.brightness}%)`;
+        }
+        
+        // 显示天气（如果启用）
+        if (data.config && data.config.weather && data.config.weather.enabled) {
+          showWeather(data.config.weather);
+        }
+      } catch (error) {
+        console.error('播放媒体错误:', error);
+        
+        // 在错误后也要发送结束事件，确保能继续播放下一个
+        setTimeout(() => {
+          sendEndEvent();
+        }, 1000);
+      }
+    }
+    
+    // 创建控制面板
+    function createControlPanel(container) {
+      if (!mediaElement || mediaElement.tagName !== 'VIDEO') return;
+      
+      const controlPanel = document.createElement('div');
+      controlPanel.className = 'control-panel';
+      controlPanel.innerHTML = `
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress" id="video-progress"></div>
+          </div>
+        </div>
+        <div class="control-buttons">
+          <div class="left-controls">
+            <button class="control-btn play-pause-btn">⏸</button>
+            <span class="time-display">00:00 / 00:00</span>
+          </div>
+          <div class="right-controls">
+            <div class="volume-container">
+              <button class="control-btn volume-btn">🔊</button>
+              <input type="range" class="volume-slider" min="0" max="1" step="0.1" value="1">
+            </div>
+            <div class="playback-rate-container">
+              <button class="playback-rate-btn">1.0x</button>
+              <div class="rate-options">
+                <div class="rate-option" data-rate="0.5">0.5x</div>
+                <div class="rate-option" data-rate="0.75">0.75x</div>
+                <div class="rate-option" data-rate="1.0">1.0x</div>
+                <div class="rate-option" data-rate="1.25">1.25x</div>
+                <div class="rate-option" data-rate="1.5">1.5x</div>
+                <div class="rate-option" data-rate="2.0">2.0x</div>
+              </div>
+            </div>
+            <button class="control-btn fullscreen-btn">⛶</button>
+          </div>
+        </div>
+      `;
+      
+      container.appendChild(controlPanel);
+      
+      // 设置控制按钮事件
+      setupControlEvents(controlPanel);
+    }
+    
+    // 设置控制面板事件
+    function setupControlEvents(panel) {
+      // 播放/暂停按钮
+      const playPauseBtn = panel.querySelector('.play-pause-btn');
+      playPauseBtn.addEventListener('click', () => {
+        if (mediaElement.paused) {
+          mediaElement.play();
+          playPauseBtn.textContent = '⏸';
+        } else {
+          mediaElement.pause();
+          playPauseBtn.textContent = '▶';
+        }
+      });
+      
+      // 进度条点击
+      const progressBar = panel.querySelector('.progress-bar');
+      progressBar.addEventListener('click', (e) => {
+        const rect = progressBar.getBoundingClientRect();
+        const pos = (e.clientX - rect.left) / rect.width;
+        mediaElement.currentTime = pos * mediaElement.duration;
+        updateProgress();
+      });
+      
+      // 音量控制
+      const volumeSlider = panel.querySelector('.volume-slider');
+      const volumeBtn = panel.querySelector('.volume-btn');
+      
+      volumeSlider.value = mediaElement.volume;
+      
+      volumeSlider.addEventListener('input', () => {
+        mediaElement.volume = volumeSlider.value;
+        if (mediaElement.volume === 0) {
+          volumeBtn.textContent = '🔇';
+        } else {
+          volumeBtn.textContent = '🔊';
+        }
+      });
+      
+      volumeBtn.addEventListener('click', () => {
+        if (mediaElement.volume > 0) {
+          mediaElement.volume = 0;
+          volumeSlider.value = 0;
+          volumeBtn.textContent = '🔇';
+        } else {
+          mediaElement.volume = 1;
+          volumeSlider.value = 1;
+          volumeBtn.textContent = '🔊';
+        }
+      });
+      
+      // 播放速率
+      const rateBtn = panel.querySelector('.playback-rate-btn');
+      const rateOptions = panel.querySelector('.rate-options');
+      
+      rateBtn.addEventListener('click', () => {
+        rateOptions.style.display = rateOptions.style.display === 'flex' ? 'none' : 'flex';
+      });
+      
+      document.addEventListener('click', (e) => {
+        if (!rateBtn.contains(e.target) && !rateOptions.contains(e.target)) {
+          rateOptions.style.display = 'none';
+        }
+      });
+      
+      const rateOptionBtns = panel.querySelectorAll('.rate-option');
+      rateOptionBtns.forEach(option => {
+        option.addEventListener('click', () => {
+          const rate = parseFloat(option.getAttribute('data-rate'));
+          mediaElement.playbackRate = rate;
+          currentPlaybackRate = rate;
+          rateBtn.textContent = `${rate}x`;
+          rateOptions.style.display = 'none';
+        });
+      });
+      
+      // 全屏按钮
+      const fullscreenBtn = panel.querySelector('.fullscreen-btn');
+      fullscreenBtn.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen();
+        } else {
+          document.exitFullscreen();
+          // 通知主进程退出全屏模式
+          ipcRenderer.send('exit-fullscreen');
+        }
+      });
+    }
+    
+    // 开始定时更新进度条
+    function startProgressUpdate() {
+      // 清除可能存在的旧定时器
+      if (progressInterval) {
+        clearInterval(progressInterval);
+      }
+      
+      progressInterval = setInterval(() => {
+        updateProgress();
+        updateTimeDisplay();
+      }, 1000);
+    }
+    
+    // 更新进度条
+    function updateProgress() {
+      if (!mediaElement || mediaElement.tagName !== 'VIDEO') return;
+      
+      const progress = document.getElementById('video-progress');
+      if (progress && !isNaN(mediaElement.duration) && mediaElement.duration > 0) {
+        const percent = (mediaElement.currentTime / mediaElement.duration) * 100;
+        progress.style.width = `${percent}%`;
+      }
+    }
+    
+    // 更新时间显示
+    function updateTimeDisplay() {
+      if (!mediaElement || mediaElement.tagName !== 'VIDEO') return;
+      
+      const timeDisplay = document.querySelector('.time-display');
+      if (timeDisplay && !isNaN(mediaElement.duration)) {
+        const currentTime = formatTime(mediaElement.currentTime);
+        const totalTime = formatTime(mediaElement.duration);
+        timeDisplay.textContent = `${currentTime} / ${totalTime}`;
+      }
+    }
+    
+    // 格式化时间
+    function formatTime(seconds) {
+      seconds = Math.floor(seconds);
+      const minutes = Math.floor(seconds / 60);
+      seconds = seconds % 60;
+      return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    
+    // 清除所有计时器
+    function clearAllTimers() {
+      if (playTimer) {
+        clearTimeout(playTimer);
+        playTimer = null;
+      }
+      
+      if (progressInterval) {
+        clearInterval(progressInterval);
+        progressInterval = null;
+      }
+    }
+    
+    // 显示天气信息
+    function showWeather(weatherConfig) {
+      // 移除旧的天气容器
+      const oldWeather = document.querySelector('.weather-container');
+      if (oldWeather) {
+        oldWeather.remove();
+      }
+      
+      // 创建新的天气容器
+      const weatherContainer = document.createElement('div');
+      weatherContainer.className = 'weather-container';
+      
+      // 模拟天气数据
+      const temperature = Math.floor(Math.random() * 30) + 5; // 5-35度
+      const humidity = Math.floor(Math.random() * 65) + 35; // 35-100%
+      const weathers = ['晴', '多云', '阴', '小雨', '中雨', '大雨', '雷阵雨', '小雪', '中雪', '大雪'];
+      const weather = weathers[Math.floor(Math.random() * weathers.length)];
+      
+      // 设置天气内容
+      weatherContainer.innerHTML = `
+        <div style="margin-bottom: 5px; font-weight: bold;">${weatherConfig.city} 天气</div>
+        <div>${weather} ${temperature}°C</div>
+        <div>湿度: ${humidity}%</div>
+        <div style="font-size: 12px; margin-top: 5px;">${new Date().toLocaleTimeString()}</div>
+      `;
+      
+      document.body.appendChild(weatherContainer);
+    }
+    
+    // 发送结束事件
+    function sendEndEvent() {
+      if (!mediaData || isEndEventSent) return;
+      
+      console.log('Sending media ended event', mediaData);
+      
+      // 设置已发送标志，防止重复发送
+      isEndEventSent = true;
+      
+      // 停止所有计时器
+      clearAllTimers();
+      
+      // 记录要发送的数据
+      const dataToSend = {
+        index: mediaData.index,
+        isSpecialContent: mediaData.isSpecialContent,
+        specialType: mediaData.specialType
+      };
+      
+      // 清除当前媒体引用，防止重复触发
+      mediaData = null;
+      
+      // 如果有媒体元素，停止播放
+      if (mediaElement) {
+        if (mediaElement.tagName === 'VIDEO') {
+          mediaElement.pause();
+          mediaElement.src = '';
+        }
+        mediaElement = null;
+      }
+      
+      // 发送结束事件到主进程
+      try {
+        ipcRenderer.send('media-ended', dataToSend);
+        
+        // 延迟关闭窗口，确保消息发送成功
+        setTimeout(() => {
+          console.log('关闭播放器窗口');
+          window.close();
+        }, 500);
+      } catch (error) {
+        console.error('发送媒体结束事件错误:', error);
+      }
+    }
+    
+    // 添加键盘事件监听
+    document.addEventListener('keydown', (e) => {
+      // ESC键 - 退出全屏
+      if (e.key === 'Escape') {
+        console.log('ESC key pressed, exiting fullscreen');
+        try {
+          if (document.fullscreenElement) {
+            document.exitFullscreen();
+          }
+          // 通知主进程退出全屏
+          ipcRenderer.send('exit-fullscreen');
+        } catch (error) {
+          console.error('Error exiting fullscreen:', error);
+        }
+        e.preventDefault();
+      }
+      
+      // 空格键 - 切换播放/暂停
+      if (e.key === ' ' && mediaElement && mediaElement.tagName === 'VIDEO') {
+        if (mediaElement.paused) {
+          mediaElement.play();
+          const playPauseBtn = document.querySelector('.play-pause-btn');
+          if (playPauseBtn) playPauseBtn.textContent = '⏸';
+        } else {
+          mediaElement.pause();
+          const playPauseBtn = document.querySelector('.play-pause-btn');
+          if (playPauseBtn) playPauseBtn.textContent = '▶';
+        }
+        e.preventDefault();
+      }
+    });
+    
+    // 窗口关闭前清理资源
+    window.addEventListener('beforeunload', () => {
+      clearAllTimers();
+      
+      if (mediaElement && mediaElement.tagName === 'VIDEO') {
+        mediaElement.pause();
+        mediaElement.src = '';
+      }
+      
+      // 确保在窗口关闭前发送结束事件
+      if (mediaData && !isEndEventSent) {
+        sendEndEvent();
+      }
+    });
+  </script>
+</body>
+</html> 

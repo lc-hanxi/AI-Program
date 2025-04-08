@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "name": "DeepSeek助手",
+  "version": "1.0",
+  "description": "使用DeepSeek API进行文本翻译和网页内容总结",
+  "permissions": [
+    "contextMenus",
+    "storage",
+    "scripting",
+    "tabs",
+    "activeTab",
+    "sidePanel"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_title": "DeepSeek助手",
+    "default_icon": {
+      "16": "images/icon16.png",
+      "48": "images/icon48.png"
+    }
+  },
+  "icons": {
+    "16": "images/icon16.png",
+    "48": "images/icon48.png"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y"
+      },
+      "description": "打开DeepSeek助手"
+    },
+    "_execute_side_panel": {
+      "suggested_key": {
+        "default": "Alt+Shift+Y"
+      },
+      "description": "打开DeepSeek助手侧边栏"
+    }
+  }
+} 

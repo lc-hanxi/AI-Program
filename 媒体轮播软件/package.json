@@ -1,0 +1,28 @@
+{
+  "name": "xld-media-player",
+  "version": "1.0.0",
+  "description": "XLD专用媒体轮播播放器",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pack": "electron-builder --dir",
+    "build:win": "electron-builder --win --x64 --dir",
+    "packager": "electron-packager . XLD-MediaPlayer --platform=win32 --arch=x64 --out=dist --overwrite"
+  },
+  "keywords": [
+    "media",
+    "player",
+    "xld"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "bootstrap": "^5.3.3",
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1",
+    "electron-packager": "^17.1.2",
+    "jquery": "^3.7.1"
+  }
+}

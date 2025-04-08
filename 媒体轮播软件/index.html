@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XLD专用播放器</title>
+  <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <div class="container-fluid p-0 main-container">
+    <!-- 顶部菜单 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">XLD专用播放器</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="nav-settings">设置</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="nav-help">帮助</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="content-area">
+      <!-- 播放列表区域 -->
+      <div class="playlist-container p-3">
+        <h5>当前计划播放列表:</h5>
+        <div class="table-responsive">
+          <table class="table table-striped table-bordered" id="playlist-table">
+            <thead class="table-dark">
+              <tr>
+                <th>序号</th>
+                <th>文件名</th>
+                <th>时长</th>
+                <th>播放次数</th>
+                <th>上刊日期</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="playlist-body">
+              <!-- 播放列表项将在这里动态生成 -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 播放列表操作按钮 -->
+        <div class="d-flex mt-2 mb-3">
+          <button class="btn btn-primary me-2" id="btn-add-file">添加文件</button>
+          <button class="btn btn-danger me-2" id="btn-delete">删除</button>
+          <button class="btn btn-secondary me-2" id="btn-up">上移</button>
+          <button class="btn btn-secondary me-2" id="btn-down">下移</button>
+        </div>
+
+        <!-- 媒体设置表单 -->
+        <div class="card mb-3" id="media-settings-form" style="display: none;">
+          <div class="card-header">媒体设置</div>
+          <div class="card-body">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="media-publish-date" class="form-label">上刊日期:</label>
+                <input type="date" class="form-control" id="media-publish-date">
+              </div>
+              <div class="col-md-6">
+                <label for="media-unpublish-date" class="form-label">下刊日期:</label>
+                <input type="date" class="form-control" id="media-unpublish-date">
+              </div>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" id="auto-unpublish" checked>
+              <label class="form-check-label" for="auto-unpublish">到期自动下刊</label>
+            </div>
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="full-playback">
+              <label class="form-check-label" for="full-playback">完整播放视频（忽略时长设置）</label>
+            </div>
+            <div class="mb-3">
+              <label for="media-duration" class="form-label">播放时长（秒）</label>
+              <input type="number" class="form-control" id="media-duration" min="0" step="1">
+              <small class="text-muted">设置为0表示完整播放视频，图片至少需要设置10秒</small>
+            </div>
+            <div class="mb-3">
+              <label for="max-play-count" class="form-label">播放次数</label>
+              <input type="number" class="form-control" id="max-play-count" min="1" step="1" value="1">
+              <small class="text-muted">设置该素材播放多少次后切换到下一个</small>
+            </div>
+            <div class="d-flex justify-content-end">
+              <button type="button" class="btn btn-primary" id="btn-apply-media-settings">应用设置</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 播放状态和控制 -->
+        <div class="play-controls p-2 border rounded">
+          <div class="mb-2 status-text" id="play-status">当前播放状态: 未播放</div>
+          <div class="btn-group">
+            <button class="btn btn-success" id="btn-play">开始播放</button>
+            <button class="btn btn-warning" id="btn-pause">暂停</button>
+            <button class="btn btn-danger" id="btn-stop">停止</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 设置对话框 -->
+  <div class="modal fade" id="settings-modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">播放器设置</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
+        </div>
+        <div class="modal-body">
+          <!-- 设置选项卡 -->
+          <ul class="nav nav-tabs" id="settingsTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic" type="button" role="tab">基本设置</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="display-tab" data-bs-toggle="tab" data-bs-target="#display" type="button" role="tab">显示设置</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="advanced-tab" data-bs-toggle="tab" data-bs-target="#advanced" type="button" role="tab">高级</button>
+            </li>
+          </ul>
+          
+          <!-- 选项卡内容 -->
+          <div class="tab-content p-3" id="settingsTabContent">
+            <!-- 基本设置 -->
+            <div class="tab-pane fade show active" id="basic" role="tabpanel">
+              <div class="card mb-3">
+                <div class="card-header">屏幕位置和大小</div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6 mb-2">
+                      <label for="screen-top" class="form-label">Top:</label>
+                      <input type="number" class="form-control" id="screen-top" min="0">
+                    </div>
+                    <div class="col-md-6 mb-2">
+                      <label for="screen-left" class="form-label">Left:</label>
+                      <input type="number" class="form-control" id="screen-left" min="0">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6 mb-2">
+                      <label for="screen-width" class="form-label">Width:</label>
+                      <input type="number" class="form-control" id="screen-width" min="100">
+                    </div>
+                    <div class="col-md-6 mb-2">
+                      <label for="screen-height" class="form-label">Height:</label>
+                      <input type="number" class="form-control" id="screen-height" min="100">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">基础选项</div>
+                <div class="card-body">
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="start-time" class="form-label">开播时间:</label>
+                      <input type="time" class="form-control" id="start-time">
+                    </div>
+                    <div class="col-md-6">
+                      <label for="end-time" class="form-label">关播时间:</label>
+                      <input type="time" class="form-control" id="end-time">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 显示设置 -->
+            <div class="tab-pane fade" id="display" role="tabpanel">
+              <div class="card mb-3">
+                <div class="card-header">包屏设置</div>
+                <div class="card-body">
+                  <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="enable-special-content">
+                    <label class="form-check-label" for="enable-special-content">启用包屏模式</label>
+                  </div>
+                  
+                  <div class="special-content-settings">
+                    <div class="mb-3">
+                      <label class="form-label">早包屏时段:</label>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <input type="time" class="form-control" id="morning-start" value="07:00">
+                        </div>
+                        <div class="col-md-6">
+                          <input type="time" class="form-control" id="morning-end" value="09:00">
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                      <label for="morning-content" class="form-label">选择素材:</label>
+                      <select class="form-select" id="morning-content">
+                        <option value="">-- 请选择素材 --</option>
+                      </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label class="form-label">晚包屏时段:</label>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <input type="time" class="form-control" id="evening-start" value="20:00">
+                        </div>
+                        <div class="col-md-6">
+                          <input type="time" class="form-control" id="evening-end" value="22:00">
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="evening-content" class="form-label">选择素材:</label>
+                      <select class="form-select" id="evening-content">
+                        <option value="">-- 请选择素材 --</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">亮度设置</div>
+                <div class="card-body">
+                  <label for="brightness-range" class="form-label">播放亮度: <span id="brightness-value">75%</span></label>
+                  <input type="range" class="form-range" id="brightness-range" min="0" max="100" value="75">
+                </div>
+              </div>
+            </div>
+
+            <!-- 高级设置 -->
+            <div class="tab-pane fade" id="advanced" role="tabpanel">
+              <div class="card mb-3">
+                <div class="card-header">天气显示</div>
+                <div class="card-body">
+                  <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="enable-weather">
+                    <label class="form-check-label" for="enable-weather">启用天气预报</label>
+                  </div>
+                  
+                  <div class="weather-settings">
+                    <div class="mb-3">
+                      <label for="weather-city" class="form-label">城市:</label>
+                      <input type="text" class="form-control" id="weather-city" value="深圳市">
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="weather-interval" class="form-label">更新频率:</label>
+                      <select class="form-select" id="weather-interval">
+                        <option value="30">每30分钟</option>
+                        <option value="60" selected>每小时</option>
+                        <option value="120">每2小时</option>
+                        <option value="360">每6小时</option>
+                      </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="weather-position" class="form-label">显示位置:</label>
+                      <select class="form-select" id="weather-position">
+                        <option value="topLeft">左上角</option>
+                        <option value="topRight" selected>右上角</option>
+                        <option value="bottomLeft">左下角</option>
+                        <option value="bottomRight">右下角</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary" id="btn-save-settings">应用</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 播放预览对话框 -->
+  <div class="modal fade" id="preview-modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">媒体预览</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
+        </div>
+        <div class="modal-body">
+          <div class="preview-container">
+            <!-- 预览内容将在这里动态生成 -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 脚本引用 -->
+  <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./js/app.js"></script>
+  <script>
+    // 添加切换完整播放复选框的事件处理
+    document.addEventListener('DOMContentLoaded', function() {
+      const fullPlayCheckbox = document.getElementById('full-playback');
+      const mediaDurationInput = document.getElementById('media-duration');
+
+      if (fullPlayCheckbox && mediaDurationInput) {
+        fullPlayCheckbox.addEventListener('change', function() {
+          mediaDurationInput.disabled = this.checked;
+          if (this.checked) {
+            mediaDurationInput.value = '0';
+          }
+        });
+      }
+      
+      // 添加应用媒体设置按钮事件
+      const applyMediaSettingsBtn = document.getElementById('btn-apply-media-settings');
+      if (applyMediaSettingsBtn) {
+        applyMediaSettingsBtn.addEventListener('click', function() {
+          if (typeof applyMediaSettings === 'function') {
+            if (applyMediaSettings()) {
+              alert('媒体设置已应用！');
+            }
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html> 

@@ -1,0 +1,143 @@
+/* 全局样式 */
+body {
+  font-family: "Microsoft YaHei", "Segoe UI", Tahoma, sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+}
+
+.main-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-area {
+  flex: 1;
+  padding: 0;
+  background-color: #fff;
+}
+
+/* 播放列表区域 */
+.playlist-container {
+  padding: 15px;
+}
+
+.table {
+  font-size: 14px;
+}
+
+.table thead th {
+  background-color: #343a40;
+  color: white;
+}
+
+/* 播放控制区域 */
+.play-controls {
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  margin-top: 20px;
+}
+
+.status-text {
+  font-weight: bold;
+  color: #0d6efd;
+}
+
+/* 设置模态框样式 */
+.modal-dialog.modal-lg {
+  max-width: 800px;
+}
+
+.card {
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background-color: #e9ecef;
+  font-weight: bold;
+}
+
+/* 表单元素样式 */
+.form-label {
+  font-weight: 500;
+}
+
+/* 预览容器 */
+.preview-container {
+  min-height: 300px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+  color: #fff;
+}
+
+/* 媒体播放相关 */
+.media-player {
+  width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .modal-dialog.modal-lg {
+    max-width: 95%;
+  }
+}
+
+/* 自定义效果 */
+.btn-group .btn {
+  min-width: 80px;
+}
+
+/* 亮度控制条样式 */
+#brightness-range::-webkit-slider-thumb {
+  background: #0d6efd;
+}
+
+#brightness-range::-moz-range-thumb {
+  background: #0d6efd;
+}
+
+/* 分类标签样式 */
+.media-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  margin-right: 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  background-color: #e9ecef;
+}
+
+.media-tag.video {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.media-tag.image {
+  background-color: #cfe2ff;
+  color: #084298;
+}
+
+.media-tag.special {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+/* 包屏和天气设置区域样式 */
+.special-content-settings,
+.weather-settings {
+  padding-left: 20px;
+  border-left: 3px solid #dee2e6;
+  margin-left: 10px;
+}
