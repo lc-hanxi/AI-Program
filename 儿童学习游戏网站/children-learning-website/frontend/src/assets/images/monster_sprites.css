@@ -1,0 +1,255 @@
+
+.monster-sprite {
+    width: 128px;
+    height: 128px;
+    background-image: url('../images/monster_sprite_sheet.png');
+    background-repeat: no-repeat;
+}
+
+.monster-sprite-0 {
+    background-position: 0px 0px;
+}
+
+.monster-sprite-1 {
+    background-position: -128px 0px;
+}
+
+.monster-sprite-2 {
+    background-position: -256px 0px;
+}
+
+.monster-sprite-3 {
+    background-position: -384px 0px;
+}
+
+.monster-sprite-4 {
+    background-position: -512px 0px;
+}
+
+.monster-sprite-5 {
+    background-position: -640px 0px;
+}
+
+.monster-sprite-6 {
+    background-position: -768px 0px;
+}
+
+.monster-sprite-7 {
+    background-position: -896px 0px;
+}
+
+.monster-sprite-8 {
+    background-position: 0px -128px;
+}
+
+.monster-sprite-9 {
+    background-position: -128px -128px;
+}
+
+.monster-sprite-10 {
+    background-position: -256px -128px;
+}
+
+.monster-sprite-11 {
+    background-position: -384px -128px;
+}
+
+.monster-sprite-12 {
+    background-position: -512px -128px;
+}
+
+.monster-sprite-13 {
+    background-position: -640px -128px;
+}
+
+.monster-sprite-14 {
+    background-position: -768px -128px;
+}
+
+.monster-sprite-15 {
+    background-position: -896px -128px;
+}
+
+.monster-sprite-16 {
+    background-position: 0px -256px;
+}
+
+.monster-sprite-17 {
+    background-position: -128px -256px;
+}
+
+.monster-sprite-18 {
+    background-position: -256px -256px;
+}
+
+.monster-sprite-19 {
+    background-position: -384px -256px;
+}
+
+.monster-sprite-20 {
+    background-position: -512px -256px;
+}
+
+.monster-sprite-21 {
+    background-position: -640px -256px;
+}
+
+.monster-sprite-22 {
+    background-position: -768px -256px;
+}
+
+.monster-sprite-23 {
+    background-position: -896px -256px;
+}
+
+.monster-sprite-24 {
+    background-position: 0px -384px;
+}
+
+.monster-sprite-25 {
+    background-position: -128px -384px;
+}
+
+.monster-sprite-26 {
+    background-position: -256px -384px;
+}
+
+.monster-sprite-27 {
+    background-position: -384px -384px;
+}
+
+.monster-sprite-28 {
+    background-position: -512px -384px;
+}
+
+.monster-sprite-29 {
+    background-position: -640px -384px;
+}
+
+.monster-sprite-30 {
+    background-position: -768px -384px;
+}
+
+.monster-sprite-31 {
+    background-position: -896px -384px;
+}
+
+.monster-sprite-32 {
+    background-position: 0px -512px;
+}
+
+.monster-sprite-33 {
+    background-position: -128px -512px;
+}
+
+.monster-sprite-34 {
+    background-position: -256px -512px;
+}
+
+.monster-sprite-35 {
+    background-position: -384px -512px;
+}
+
+.monster-sprite-36 {
+    background-position: -512px -512px;
+}
+
+.monster-sprite-37 {
+    background-position: -640px -512px;
+}
+
+.monster-sprite-38 {
+    background-position: -768px -512px;
+}
+
+.monster-sprite-39 {
+    background-position: -896px -512px;
+}
+
+.monster-sprite-40 {
+    background-position: 0px -640px;
+}
+
+.monster-sprite-41 {
+    background-position: -128px -640px;
+}
+
+.monster-sprite-42 {
+    background-position: -256px -640px;
+}
+
+.monster-sprite-43 {
+    background-position: -384px -640px;
+}
+
+.monster-sprite-44 {
+    background-position: -512px -640px;
+}
+
+.monster-sprite-45 {
+    background-position: -640px -640px;
+}
+
+.monster-sprite-46 {
+    background-position: -768px -640px;
+}
+
+.monster-sprite-47 {
+    background-position: -896px -640px;
+}
+
+.monster-sprite-48 {
+    background-position: 0px -768px;
+}
+
+.monster-sprite-49 {
+    background-position: -128px -768px;
+}
+
+.monster-sprite-50 {
+    background-position: -256px -768px;
+}
+
+.monster-sprite-51 {
+    background-position: -384px -768px;
+}
+
+.monster-sprite-52 {
+    background-position: -512px -768px;
+}
+
+.monster-sprite-53 {
+    background-position: -640px -768px;
+}
+
+.monster-sprite-54 {
+    background-position: -768px -768px;
+}
+
+.monster-sprite-55 {
+    background-position: -896px -768px;
+}
+
+.monster-sprite-56 {
+    background-position: 0px -896px;
+}
+
+.monster-sprite-57 {
+    background-position: -128px -896px;
+}
+
+.monster-sprite-58 {
+    background-position: -256px -896px;
+}
+
+.monster-sprite-59 {
+    background-position: -384px -896px;
+}
+
+.monster-sprite-60 {
+    background-position: -512px -896px;
+}
+
+.monster-sprite-61 {
+    background-position: -640px -896px;
+}

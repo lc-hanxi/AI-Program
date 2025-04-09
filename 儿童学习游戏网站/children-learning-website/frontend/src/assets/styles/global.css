@@ -1,0 +1,14 @@
+/* 全局样式文件 */
+/* 在这里添加你的全局 CSS 规则 */
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f9fa; /* 设置一个浅灰色的背景 */
+}
+
+* {
+    box-sizing: border-box;
+} 

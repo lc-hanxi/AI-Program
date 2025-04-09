@@ -1,0 +1,98 @@
+
+.zombie-sprite {
+    width: 128px;
+    height: 128px;
+    background-image: url('../images/zombie_sprite_sheet.png');
+    background-repeat: no-repeat;
+}
+
+.zombie-sprite-0 {
+    background-position: 0px 0;
+}
+
+.zombie-sprite-1 {
+    background-position: -128px 0;
+}
+
+.zombie-sprite-2 {
+    background-position: -256px 0;
+}
+
+.zombie-sprite-3 {
+    background-position: -384px 0;
+}
+
+.zombie-sprite-4 {
+    background-position: -512px 0;
+}
+
+.zombie-sprite-5 {
+    background-position: -640px 0;
+}
+
+.zombie-sprite-6 {
+    background-position: -768px 0;
+}
+
+.zombie-sprite-7 {
+    background-position: -896px 0;
+}
+
+.zombie-sprite-8 {
+    background-position: -1024px 0;
+}
+
+.zombie-sprite-9 {
+    background-position: -1152px 0;
+}
+
+.raccoon-sprite {
+    width: 128px;
+    height: 128px;
+    background-image: url('../images/raccoon_sprite_sheet.png');
+    background-repeat: no-repeat;
+}
+
+.raccoon-sprite-0 {
+    background-position: 0px 0;
+}
+
+.raccoon-sprite-1 {
+    background-position: -128px 0;
+}
+
+.raccoon-sprite-2 {
+    background-position: -256px 0;
+}
+
+.raccoon-sprite-3 {
+    background-position: -384px 0;
+}
+
+.raccoon-sprite-4 {
+    background-position: -512px 0;
+}
+
+.raccoon-sprite-5 {
+    background-position: -640px 0;
+}
+
+.raccoon-sprite-6 {
+    background-position: -768px 0;
+}
+
+.raccoon-sprite-7 {
+    background-position: -896px 0;
+}
+
+.raccoon-sprite-8 {
+    background-position: -1024px 0;
+}
+
+.raccoon-sprite-9 {
+    background-position: -1152px 0;
+}
+
+.raccoon-sprite-10 {
+    background-position: -1280px 0;
+}

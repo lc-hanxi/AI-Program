@@ -1,0 +1,99 @@
+.zombie-sprite {
+    width: 120px;
+    height: 120px;
+    background-image: url('../images/zombie_sprite_sheet.png');
+    background-repeat: no-repeat;
+    background-size: 1200px 120px; /* 10帧 x 120px */
+}
+
+.zombie-sprite-0 {
+    background-position: 0px 0;
+}
+
+.zombie-sprite-1 {
+    background-position: -120px 0;
+}
+
+.zombie-sprite-2 {
+    background-position: -240px 0;
+}
+
+.zombie-sprite-3 {
+    background-position: -360px 0;
+}
+
+.zombie-sprite-4 {
+    background-position: -480px 0;
+}
+
+.zombie-sprite-5 {
+    background-position: -600px 0;
+}
+
+.zombie-sprite-6 {
+    background-position: -720px 0;
+}
+
+.zombie-sprite-7 {
+    background-position: -840px 0;
+}
+
+.zombie-sprite-8 {
+    background-position: -960px 0;
+}
+
+.zombie-sprite-9 {
+    background-position: -1080px 0;
+}
+
+.raccoon-sprite {
+    width: 120px;
+    height: 120px;
+    background-image: url('../images/raccoon_sprite_sheet.png');
+    background-repeat: no-repeat;
+    background-size: 1320px 120px; /* 11帧 x 120px */
+}
+
+.raccoon-sprite-0 {
+    background-position: 0px 0;
+}
+
+.raccoon-sprite-1 {
+    background-position: -120px 0;
+}
+
+.raccoon-sprite-2 {
+    background-position: -240px 0;
+}
+
+.raccoon-sprite-3 {
+    background-position: -360px 0;
+}
+
+.raccoon-sprite-4 {
+    background-position: -480px 0;
+}
+
+.raccoon-sprite-5 {
+    background-position: -600px 0;
+}
+
+.raccoon-sprite-6 {
+    background-position: -720px 0;
+}
+
+.raccoon-sprite-7 {
+    background-position: -840px 0;
+}
+
+.raccoon-sprite-8 {
+    background-position: -960px 0;
+}
+
+.raccoon-sprite-9 {
+    background-position: -1080px 0;
+}
+
+.raccoon-sprite-10 {
+    background-position: -1200px 0;
+}
