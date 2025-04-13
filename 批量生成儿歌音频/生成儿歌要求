@@ -1,0 +1,27 @@
+请你帮我写一个JavaScript程序。
+（1）这个程序接收一个中文字符串为输入。
+（2）程序会遍历字符串中的每个字符，并将中文字符作为输入，调用Coze Api的一个工作流。
+（3）工作流会返回一个JSON串，包含三个字段：
+    1）song: 一首儿歌音频的URL
+    2) text: 一首儿歌的歌词
+    3）word: 输入中文字符音频的URL
+ (4) 你需要以当前字符为名，创建一个文件夹，文件夹中包含三个文件，
+     文件名称为song.mp3, 文件内容为从song字段中下载的音频。
+     文件名称为text.txt, 文件内容为从text字段中的歌词。
+     文件名称为word.mp3, 文件内容为从word字段中下载的音频。
+
+coze api工作流调用的示例代码如下：
+
+
+其返回的数据格式如下：
+{"code":0,
+"cost":"0",
+"data":"{
+\"song\":\"https://lf-bot-studio-plugin-resource.coze.cn/obj/bot-studio-platform-plugin-tos/artist/image/c8a3a014910b44e4a1302824b845fa1a.mp3\",
+\"text\":\"《好奶奶》\\n好奶奶，心最慈，\\n陪我玩耍讲故事。\\n给我做好吃的饭，\\n我爱我的好奶奶。 \",
+\"word\":\"https://lf-bot-studio-plugin-resource.coze.cn/obj/bot-studio-platform-plugin-tos/artist/image/c923e5a458b7434496698ce117b41962.mp3\"}",
+"debug_url":"https://www.coze.cn/work_flow?execute_id=7492451892510212111&space_id=7473139281767972927&workflow_id=7492446143361859618&execute_mode=2",
+"msg":"Success",
+"token":184}
+
+
