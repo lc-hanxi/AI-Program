@@ -85,6 +85,7 @@
             :key="answer" 
             class="answer-btn"
             @click="shootBullet(answer)"
+            :disabled="!canShoot"
           >
             {{ answer }}
           </button>
@@ -210,6 +211,10 @@ export default {
       return settings || mathLevels.value[mathLevels.value.length - 1] || { level_number: level.value, max_number: 10, duration_seconds: 60 };
     });
     // ---------------------------------
+
+    // 在 setup 函数中添加状态变量
+    const isBulletInFlight = ref(false); // 标记是否有子弹正在飞行
+    const canShoot = ref(true); // 标记是否允许点击答案按钮
 
     // Preload and setup
     onMounted(async () => {
@@ -453,159 +458,127 @@ export default {
     
     // 发射子弹
     const shootBullet = (answer) => {
-      console.log('尝试发射子弹:', answer)
-      playSound(answer === currentQuestion.answer)
-      
-      // 如果答案错误，不发射子弹
-      if (answer !== currentQuestion.answer) {
-        // 只播放错误音效，不发射子弹
-        return
+      console.log('尝试发射子弹:', answer);
+      playSound(answer === currentQuestion.answer);
+
+      // 如果答案错误或不允许发射，直接返回
+      if (answer !== currentQuestion.answer || !canShoot.value) {
+        return;
       }
-      
+
+      // 禁用发射和按钮点击
+      canShoot.value = false;
+      isBulletInFlight.value = true;
+
       // 创建新子弹
       const newBullet = {
         position: 15, // 初始位置（坦克位置）
         answer: answer,
-      }
-      
+      };
+
       // 添加到子弹数组
-      bullets.value.push(newBullet)
-      
+      bullets.value.push(newBullet);
+
       // 使用直接DOM操作确保子弹移动
       setTimeout(() => {
-        const bulletElements = document.querySelectorAll('.bullet')
-        const bulletIndex = bulletElements.length - 1
-        
+        const bulletElements = document.querySelectorAll('.bullet');
+        const bulletIndex = bulletElements.length - 1;
+
         if (bulletElements[bulletIndex]) {
           // 强制回流，确保浏览器重新计算样式
-          void bulletElements[bulletIndex].offsetWidth
-          
+          void bulletElements[bulletIndex].offsetWidth;
+
           // 使用requestAnimationFrame确保平滑动画
-          let startTime = null
-          const duration = 800 // 子弹飞行时间(毫秒)，稍微缩短以加快子弹速度
-          const startPosition = 15
-          const targetPosition = monsterPosition.value
-          const distance = targetPosition - startPosition
-          
-          // 修复 no-inner-declarations: 使用函数表达式
+          let startTime = null;
+          const duration = 800; // 子弹飞行时间(毫秒)
+          const startPosition = 15;
+          const targetPosition = monsterPosition.value;
+          const distance = targetPosition - startPosition;
+
           const animateBullet = function(timestamp) {
-            if (!startTime) startTime = timestamp
-            const elapsed = timestamp - startTime
-            const progress = Math.min(elapsed / duration, 1)
-            
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
             // 使用线性插值计算当前位置
-            const currentPosition = startPosition + distance * progress
-            
+            const currentPosition = startPosition + distance * progress;
+
             // 更新子弹位置
             if (bulletIndex < bullets.value.length) {
-              bullets.value[bulletIndex].position = currentPosition
+              bullets.value[bulletIndex].position = currentPosition;
             }
-            
-            // 更新DOM元素位置，使用当前的bulletElements引用
-            const currentBulletElements = document.querySelectorAll('.bullet')
+
+            // 更新DOM元素位置
+            const currentBulletElements = document.querySelectorAll('.bullet');
             if (bulletIndex < currentBulletElements.length) {
-              currentBulletElements[bulletIndex].style.left = `${currentPosition}%`
+              currentBulletElements[bulletIndex].style.left = `${currentPosition}%`;
             }
-            
+
             // 检查是否击中怪物
             if (progress >= 1) {
               // 子弹到达目标位置，从DOM和数组中移除
               if (bulletIndex < bullets.value.length) {
-                bullets.value.splice(bulletIndex, 1)
+                bullets.value.splice(bulletIndex, 1);
               }
-              
+
               // 从DOM中移除子弹元素
               if (bulletIndex < currentBulletElements.length) {
-                currentBulletElements[bulletIndex].remove()
+                currentBulletElements[bulletIndex].remove();
               }
-              
+
               // 答案正确，触发怪物被击中效果
-              // BOSS关卡特殊处理 (使用新判断)
               if (isEffectivelyBossLevel.value) {
-                // 修改：每次减少 10 血量
-                bossHealth.value -= 10; 
-                
-                // 所有关卡均获得10分
-                score.value += 10
-                
+                bossHealth.value -= 10;
+                score.value += 10;
+
                 if (bossHealth.value <= 0) {
-                  // BOSS被击败
-                  bossDefeated.value = true
+                  bossDefeated.value = true;
                   setTimeout(() => {
-                     // 挑战模式 BOSS 被击败也算游戏结束
-                     endGame(isChallengeBossMode.value ? '挑战结束！' : '恭喜你击败了BOSS，通过所有关卡！')
-                  }, 2000)
+                    endGame(isChallengeBossMode.value ? '挑战结束！' : '恭喜你击败了BOSS，通过所有关卡！');
+                  }, 2000);
                 } else {
-                  // BOSS后退一点但不倒下
-                  monsterPosition.value = Math.min(80, monsterPosition.value + 5)
-                  
-                  // 生成新的题目
-                  generateQuestion()
+                  monsterPosition.value = Math.min(80, monsterPosition.value + 5);
+                  generateQuestion();
+                  canShoot.value = true; // 重新启用按钮
                 }
               } else {
-                // 普通关卡怪兽被击中
-                monsterHit.value = true
-                
-                // 延迟处理，等待怪物倒下动画完成
+                monsterHit.value = true;
                 setTimeout(() => {
-                  try { // 添加 try...catch
-                      // 增加分数
-                      score.value += 10
-                      
-                      // 标记怪兽已被击败，触发淡出动画
-                      monsterDefeated.value = true
-                      
-                      // 等待淡出动画完成后，再生成新怪兽
-                      setTimeout(() => {
-                        try { // 嵌套 setTimeout 也添加 try...catch
-                            // 重置怪兽状态
-                            monsterDefeated.value = false
-                            
-                            // 立即删除当前怪兽，重新生成全新怪兽
-                            generateNewMonster()
-                            
-                            // 生成新问题
-                            generateQuestion()
+                  score.value += 10;
+                  monsterDefeated.value = true;
 
-                            // --- 恢复基于分数的过关检查 (仅限普通关卡) ---
-                            if (gameMode.value === 'campaign' && !isEffectivelyBossLevel.value && score.value >= 100) {
-                              if (level.value < 4) {
-                                // 完成当前关卡
-                                levelComplete.value = true
-                                levelCompleteMessage.value = `恭喜通过第${level.value}关！`
-                                // 完成关卡时清除计时器
-                                clearTimers(); 
-                              } else {
-                                // 这个分支理论上不会执行，因为 score>=100 时不会是 level 4 普通怪
-                                // 但保留以防万一
-                                endGame('恭喜你通过所有关卡！')
-                              }
-                            }
-                            // -------------------------------------------
-                        } catch(innerError) {
-                             console.error('Error in inner setTimeout (monster defeated -> new monster):', innerError);
-                             // 可以在这里触发一个游戏结束或错误状态，防止游戏卡死
-                             endGame('游戏出现内部错误，请重试！');
-                        }
-                      }, 500) // 等待淡出动画完成
-                  } catch(outerError) {
-                      console.error('Error in outer setTimeout (monster defeated):', outerError);
-                      // 可以在这里触发一个游戏结束或错误状态
-                      endGame('游戏出现内部错误，请重试！');
-                  }
-                }, 600)
+                  setTimeout(() => {
+                    monsterDefeated.value = false;
+                    generateNewMonster();
+                    generateQuestion();
+                    canShoot.value = true; // 重新启用按钮
+
+                    // 检查是否达到100分（普通关卡）
+                    if (gameMode.value === 'campaign' && !isEffectivelyBossLevel.value && score.value >= 100) {
+                      if (level.value < 4) {
+                        // 完成当前关卡
+                        levelComplete.value = true;
+                        levelCompleteMessage.value = `恭喜通过第${level.value}关！`;
+                        clearTimers();
+                      } else {
+                        // 最后一关
+                        endGame('恭喜你通过所有关卡！');
+                      }
+                    }
+                  }, 500);
+                }, 600);
               }
-              
-              return // 动画结束
+
+              return;
             }
             
             // 继续动画
-            requestAnimationFrame(animateBullet)
-          }; // 函数表达式需要分号
+            requestAnimationFrame(animateBullet);
+          };
           
-          requestAnimationFrame(animateBullet)
+          requestAnimationFrame(animateBullet);
         }
-      }, 10) // 增加轻微延迟，确保DOM更新
+      }, 10);
     }
     
     // 生成新怪兽的函数（不是重置怪兽位置）
@@ -1023,6 +996,7 @@ export default {
       levelError,
       monsterSpriteIndex, // 确保 monsterSpriteIndex 返回（如果模板或其他地方直接用）
       isChallengeBossMode,
+      canShoot,
     }
   }
 }
