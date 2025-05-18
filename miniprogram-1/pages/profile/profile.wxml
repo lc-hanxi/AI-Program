@@ -1,0 +1,45 @@
+<!-- pages/profile/profile.wxml -->
+<view class="container">
+  <!-- 用户信息区域 -->
+  <view class="user-info" bindtap="onUserInfoTap" hover-class="click-active">
+    <image class="avatar" src="{{isLoggedIn ? userInfo.avatarUrl : '/assets/icons/default-avatar.png'}}" mode="aspectFill"></image>
+    <view class="user-detail">
+      <view class="nickname">{{isLoggedIn ? userInfo.nickName : '点击登录'}}</view>
+      <view class="stats">
+        <view class="stat-item">
+          <text class="stat-value">{{statistics.totalWorkouts}}</text>
+          <text class="stat-label">总训练</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{statistics.totalMinutes}}</text>
+          <text class="stat-label">总分钟</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{statistics.currentStreak}}</text>
+          <text class="stat-label">连续天数</text>
+        </view>
+      </view>
+    </view>
+    <view class="login-tip" wx:if="{{!isLoggedIn}}">点击头像登录</view>
+  </view>
+
+  <!-- 功能入口 -->
+  <view class="menu-list">
+    <view class="menu-item" bindtap="navigateToAchievements">
+      <image class="menu-icon" src="/assets/icons/achievement.png"></image>
+      <text class="menu-text">我的成就</text>
+    </view>
+    <view class="menu-item" bindtap="navigateToHistory">
+      <image class="menu-icon" src="/assets/icons/history.png"></image>
+      <text class="menu-text">训练历史</text>
+    </view>
+    <view class="menu-item">
+      <image class="menu-icon" src="/assets/icons/settings.png"></image>
+      <text class="menu-text">设置</text>
+    </view>
+    <view class="menu-item">
+      <image class="menu-icon" src="/assets/icons/feedback.png"></image>
+      <text class="menu-text">反馈</text>
+    </view>
+  </view>
+</view>

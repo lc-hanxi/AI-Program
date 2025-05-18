@@ -431,15 +431,20 @@ export default {
             
             // Update raccoon position, ensuring it doesn't exceed 85
             const nextPosition = raccoonPosition.value + raccoonStep;
-            raccoonPosition.value = Math.min(nextPosition, 85); // Change 90 to 85
+            raccoonPosition.value = Math.min(nextPosition, 85); // 限制在85%
             // --- End re-introduction ---
 
             // --- ADD: Play word audio --- 
             playWordAudio();
 
-            // --- Modify: Change win condition to 85% ---
+            // --- 修改：调整胜利判定和终点显示 ---
             if (raccoonPosition.value >= 85) { 
-              endGame('win');
+              // 先让浣熊显示到达终点线的动画 (延迟通关提示)
+              raccoonPosition.value = 92; // 确保浣熊动画显示跑到终点线
+              // 延迟1秒后再结束游戏，让用户能看到浣熊到达终点的动画
+              setTimeout(() => {
+                endGame('win');
+              }, 1000);
               return; // Stop further execution for this word
             }
             
@@ -512,8 +517,8 @@ export default {
         console.log('Player lost. Game Over.');
       }
       
-      // 记录游戏结果到数据库 (根据需要调整，比如只记录总成绩)
-      // submitScoreIfNeeded(); // Maybe call this only on final gameOver or lose?
+      // 记录游戏结果到数据库
+      saveGameResult(reason === 'win');
     };
     
     const saveGameResult = async (win) => {
@@ -575,11 +580,47 @@ export default {
     // --- Go to Next Level --- 
     const goToNextLevel = () => {
       if (level.value < MAX_LEVEL) {
-        level.value++; // Increment level
+        const nextLevel = level.value + 1; // 保存下一关的值
+        console.log(`准备进入第 ${nextLevel} 关`);
+        
         levelComplete.value = false; // Hide level complete screen
-        resetGame(); // Reset game state for the new level
-        startGame(); // Start the new level
-        console.log(`Starting next level: ${level.value}`);
+        gameOver.value = false; // 确保游戏结束画面不显示
+        
+        // 重置游戏状态，但保留当前关卡进度
+        clearTimers();
+        stopAllAudio();
+        
+        zombiePosition.value = 5;
+        raccoonPosition.value = 0;
+        wordsCount.value = 0;
+        // 重要：只在这里设置新的关卡值，避免被startGame重置
+        
+        // 重置动画帧
+        zombieFrame.value = 0;
+        raccoonFrame.value = 0;
+        
+        currentWord.value = '';
+        spelledWord.value = [];
+        letterOptions.value = [];
+        selectedLetters.value = [];
+        
+        // 开始新关卡
+        gameStarted.value = true;
+        level.value = nextLevel; // 确保关卡值正确设置
+        
+        // 启动僵尸移动计时器
+        zombieTimer.value = setInterval(moveZombie, 100);
+        
+        // 启动精灵图动画计时器
+        startSpriteAnimation();
+        
+        // 播放背景音乐
+        playBackgroundMusic();
+        
+        // 选择新单词
+        chooseNewWord();
+        
+        console.log(`成功进入第 ${level.value} 关`);
       } else {
         console.error("Already at max level, cannot go to next level.");
         // Optionally, redirect to game over or main menu
@@ -606,7 +647,8 @@ export default {
 
       // --- 添加僵尸到达终点检测 (85%) ---
       if (zombiePosition.value >= 85) { // 修改阈值为 85
-        endGame('失败了，僵尸先到达终点！', false); // 僵尸获胜
+        zombiePosition.value = 92; // 确保僵尸动画显示跑到终点线
+        endGame('lose'); // 僵尸获胜，确保使用正确参数
       }
       // -------------------------
     };

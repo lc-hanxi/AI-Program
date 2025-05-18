@@ -1,0 +1,24 @@
+<!-- pages/test/storageTest.wxml -->
+<view class="container">
+  <view class="header">
+    <text class="title">数据存储测试</text>
+    <button class="clear-btn" bindtap="clearStorage">清空存储</button>
+  </view>
+  
+  <view class="test-results">
+    <view class="section-title">测试结果</view>
+    <view class="result-item" wx:for="{{testResults}}" wx:key="name">
+      <view class="result-name">{{item.name}}</view>
+      <view class="result-status {{item.passed ? 'passed' : 'failed'}}">
+        {{item.passed ? '✓' : '✗'}} {{item.message}}
+      </view>
+    </view>
+  </view>
+  
+  <view class="storage-data" wx:if="{{storageData}}">
+    <view class="section-title">当前存储数据</view>
+    <view class="data-content">
+      <text>{{JSON.stringify(storageData, null, 2)}}</text>
+    </view>
+  </view>
+</view>

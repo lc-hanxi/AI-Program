@@ -1,0 +1,74 @@
+/* pages/test/storageTest.wxss */
+.container {
+  padding: 20rpx;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+.clear-btn {
+  font-size: 26rpx;
+  color: #ff4d4f;
+  border: 1rpx solid #ff4d4f;
+  border-radius: 6rpx;
+  padding: 0 20rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+  color: #333;
+}
+
+.test-results {
+  margin-bottom: 40rpx;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.result-name {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.result-status {
+  font-size: 28rpx;
+}
+
+.result-status.passed {
+  color: #52c41a;
+}
+
+.result-status.failed {
+  color: #ff4d4f;
+}
+
+.storage-data {
+  background-color: #f9f9f9;
+  padding: 20rpx;
+  border-radius: 8rpx;
+}
+
+.data-content {
+  font-size: 24rpx;
+  color: #666;
+  white-space: pre-wrap;
+  word-break: break-all;
+}

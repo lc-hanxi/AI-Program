@@ -1,0 +1,51 @@
+{
+  "usingComponents": {
+    "ec-canvas": "/components/ec-canvas/miniprogram_dist"
+  },
+  "pages": [
+    "pages/index/index",
+    "pages/statistics/statistics",
+    "pages/profile/profile",
+    "pages/training/template/template",
+    "pages/training/workout/workout",
+    "pages/training/history/history",
+    "pages/achievement/achievement",
+    "pages/logs/logs",
+    "pages/test/storageTest"
+  ],
+  "window": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "FitTracker",
+    "navigationBarBackgroundColor": "#4CAF50"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#4CAF50",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "训练",
+        "iconPath": "assets/icons/train.png",
+        "selectedIconPath": "assets/icons/train-active.png"
+      },
+      {
+        "pagePath": "pages/statistics/statistics",
+        "text": "数据",
+        "iconPath": "assets/icons/stats.png",
+        "selectedIconPath": "assets/icons/stats-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "assets/icons/profile.png",
+        "selectedIconPath": "assets/icons/profile-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

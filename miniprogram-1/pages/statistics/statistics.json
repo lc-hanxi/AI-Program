@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "数据统计",
+  "usingComponents": {
+    "ec-canvas": "/components/ec-canvas/miniprogram_dist"
+  }
+}

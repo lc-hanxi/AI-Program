@@ -1,0 +1,50 @@
+<!-- pages/index/index.wxml -->
+<view class="container">
+  <!-- 顶部操作区 -->
+  <view class="action-area">
+    <button class="action-button primary" bindtap="startQuickWorkout">
+      <text class="button-text">开始训练</text>
+    </button>
+    <button class="action-button secondary" bindtap="viewHistory">
+      <text class="button-text">训练历史</text>
+    </button>
+  </view>
+
+  <!-- 训练模板区 -->
+  <view class="section">
+    <view class="section-title">训练计划</view>
+    <view class="template-list">
+      <view class="template-item" 
+            wx:for="{{templates}}" 
+            wx:key="id" 
+            bindtap="onTemplateSelect" 
+            data-id="{{item.id}}"
+            style="border-color: {{item.color}}">
+        <image class="template-icon" src="{{item.icon}}" mode="aspectFit"></image>
+        <view class="template-info">
+          <view class="template-name">{{item.name}}</view>
+          <view class="template-desc">{{item.description}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最近训练区 -->
+  <view class="section" wx:if="{{recentWorkouts.length > 0}}">
+    <view class="section-title">最近训练</view>
+    <view class="workout-list">
+      <view class="workout-item" wx:for="{{recentWorkouts}}" wx:key="id">
+        <view class="workout-info">
+          <view class="workout-name">{{item.name}}</view>
+          <view class="workout-meta">{{item.date}} · {{item.duration}}分钟</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提示区 -->
+  <view class="tip-section" wx:if="{{recentWorkouts.length === 0}}">
+    <view class="tip-icon">💪</view>
+    <view class="tip-text">开始你的第一次训练吧！</view>
+  </view>
+</view>

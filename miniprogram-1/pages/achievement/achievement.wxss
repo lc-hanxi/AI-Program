@@ -1,0 +1,281 @@
+/* pages/achievement/achievement.wxss */
+.container {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* 标签页样式 */
+.tabs {
+  display: flex;
+  width: 100%;
+  padding: 15rpx 20rpx;
+  background-color: #fff;
+  box-sizing: border-box;
+  margin-bottom: 5rpx;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  margin: 0 10rpx;
+  padding: 25rpx 0;
+  font-size: 32rpx;
+  color: #666;
+  background-color: #f8f8f8;
+  border-radius: 10rpx;
+  transition: all 0.3s ease;
+}
+
+.tab:first-child {
+  margin-left: 0;
+}
+
+.tab:last-child {
+  margin-right: 0;
+}
+
+.tab.active {
+  color: #fff;
+  background-color: #4CAF50;
+  font-weight: bold;
+  box-shadow: 0 2rpx 8rpx rgba(76, 175, 80, 0.3);
+}
+
+.tab.active::after {
+  display: none;
+}
+
+/* 成就页面样式 */
+.achievement-container {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.achievement-stats {
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  padding: 15rpx 20rpx;
+  border-radius: 16rpx;
+  margin: 0 20rpx 0; /* 完全移除上下边距 */
+  box-shadow: 0 1rpx 8rpx rgba(0, 0, 0, 0.05);
+  border-top: 1rpx solid #f5f5f5; /* 添加分割线 */
+}
+
+.stat-item {
+  flex: 1;
+  text-align: center;
+  padding: 0 10rpx;
+  position: relative;
+}
+
+.stat-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 20%;
+  height: 60%;
+  width: 1rpx;
+  background-color: #f0f0f0;
+}
+
+.stat-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #4CAF50;
+  display: block;
+  margin-bottom: 6rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.achievement-list {
+  margin: 20rpx;
+}
+
+.achievement-item {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  padding: 20rpx;
+  border-radius: 10rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  opacity: 0.6;
+}
+
+.achievement-item.unlocked {
+  opacity: 1;
+}
+
+.achievement-icon {
+  width: 100rpx;
+  height: 100rpx;
+  margin-right: 20rpx;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  padding: 10rpx;
+}
+
+.achievement-info {
+  flex: 1;
+}
+
+.achievement-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 6rpx;
+}
+
+.achievement-desc {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+.achievement-progress {
+  display: flex;
+  align-items: center;
+}
+
+progress {
+  flex: 1;
+  margin-right: 10rpx;
+}
+
+.progress-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.unlock-date {
+  font-size: 24rpx;
+  color: #4CAF50;
+}
+
+/* 排行榜页面样式 */
+.ranking-container {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.ranking-types {
+  display: flex;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 10rpx;
+  margin: 0 0 20rpx 0;
+  overflow: hidden;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.type-item {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  font-size: 28rpx;
+  color: #666;
+}
+
+.type-item.active {
+  background-color: #4CAF50;
+  color: #fff;
+}
+
+.ranking-section {
+  margin: 20rpx;
+  padding-top: 10rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 15rpx;
+  color: #333;
+}
+
+.ranking-list {
+  background-color: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  margin-bottom: 30rpx;
+}
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  padding: 25rpx 30rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+  transition: all 0.3s ease;
+}
+
+.ranking-item:active {
+  background-color: #f9f9f9;
+}
+
+.ranking-item.current-user {
+  background-color: #f8faf8;
+}
+
+.ranking-item:last-child {
+  border-bottom: none;
+}
+
+.ranking-item.current-user {
+  background-color: #f8fff8;
+}
+
+.rank-number {
+  width: 60rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #666;
+  text-align: center;
+}
+
+.ranking-item:nth-child(1) .rank-number {
+  color: #FFD700;
+}
+
+.ranking-item:nth-child(2) .rank-number {
+  color: #C0C0C0;
+}
+
+.ranking-item:nth-child(3) .rank-number {
+  color: #CD7F32;
+}
+
+.user-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  margin-right: 20rpx;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 6rpx;
+}
+
+.user-stats {
+  font-size: 24rpx;
+  color: #999;
+}

@@ -1,0 +1,58 @@
+<!-- pages/training/template/template.wxml -->
+<view class="container">
+  <!-- 模板信息头部 -->
+  <view class="template-header" style="background-color: {{templateInfo.color}}">
+    <view class="template-title">{{templateInfo.name}}</view>
+    <view class="template-description">{{templateInfo.description}}</view>
+    
+    <view class="template-meta">
+      <view class="meta-item">
+        <text class="meta-label">难度</text>
+        <text class="meta-value">{{templateInfo.difficulty}}</text>
+      </view>
+      <view class="meta-item">
+        <text class="meta-label">时长</text>
+        <text class="meta-value">{{templateInfo.duration}}</text>
+      </view>
+      <view class="meta-item">
+        <text class="meta-label">频率</text>
+        <text class="meta-value">{{templateInfo.frequency}}</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 训练动作列表 -->
+  <view class="exercise-list">
+    <view class="section-title">训练动作</view>
+    
+    <view class="exercise-item" wx:for="{{exercises}}" wx:key="id">
+      <view class="exercise-header">
+        <image class="exercise-image" src="{{item.image}}" mode="aspectFill"></image>
+        <view class="exercise-info">
+          <view class="exercise-name">{{item.name}}</view>
+          <view class="exercise-muscle">{{item.muscle}}</view>
+        </view>
+      </view>
+      
+      <view class="exercise-details">
+        <view class="detail-item">
+          <text class="detail-label">组数</text>
+          <text class="detail-value">{{item.sets}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">次数/时间</text>
+          <text class="detail-value">{{item.reps}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">休息</text>
+          <text class="detail-value">{{item.rest}}秒</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 底部操作区 -->
+  <view class="action-area">
+    <button class="start-button" bindtap="startWorkout">开始训练</button>
+  </view>
+</view>

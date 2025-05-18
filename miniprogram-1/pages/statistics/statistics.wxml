@@ -1,0 +1,23 @@
+<!-- pages/statistics/statistics.wxml -->
+<view class="container">
+  <view class="section">
+    <view class="section-title">训练数据</view>
+    <view class="chart-container">
+      <canvas canvas-id="trainingChart" id="trainingChart" style="width: 100%; height: 300px;"></canvas>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">体重趋势</view>
+    <view class="chart-container">
+      <canvas canvas-id="weightChart" id="weightChart" style="width: 100%; height: 300px;"></canvas>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">完成度统计</view>
+    <view class="chart-container">
+      <canvas canvas-id="completionChart" id="completionChart" style="width: 100%; height: 300px;"></canvas>
+    </view>
+  </view>
+</view>

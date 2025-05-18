@@ -1,0 +1,118 @@
+<!-- pages/achievement/achievement.wxml -->
+<view class="container">
+  <!-- 顶部标签页 -->
+  <view class="tabs">
+    <view class="tab {{activeTab === 0 ? 'active' : ''}}" 
+          bindtap="switchTab" 
+          data-tab="0">
+      成就
+    </view>
+    <view class="tab {{activeTab === 1 ? 'active' : ''}}" 
+          bindtap="switchTab" 
+          data-tab="1">
+      排行榜
+    </view>
+  </view>
+  
+  <!-- 成就页面 -->
+  <view class="achievement-container" wx:if="{{activeTab === 0}}">
+    <!-- 成就统计 -->
+    <view class="achievement-stats">
+      <view class="stat-item">
+        <text class="stat-value">{{unlockedAchievements.length}}</text>
+        <text class="stat-label">已解锁</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{achievements.length}}</text>
+        <text class="stat-label">总成就</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{completionRate}}%</text>
+        <text class="stat-label">完成度</text>
+      </view>
+    </view>
+    
+    <!-- 成就列表 -->
+    <view class="achievement-list">
+      <view class="achievement-item {{item.unlocked ? 'unlocked' : ''}}" 
+            wx:for="{{achievements}}" 
+            wx:key="id">
+        <image class="achievement-icon" src="{{item.icon}}" mode="aspectFit"></image>
+        <view class="achievement-info">
+          <view class="achievement-name">{{item.name}}</view>
+          <view class="achievement-desc">{{item.description}}</view>
+          <view class="achievement-progress" wx:if="{{!item.unlocked}}">
+            <progress percent="{{item.progress / item.total * 100}}" 
+                     stroke-width="3" 
+                     activeColor="#4CAF50" 
+                     backgroundColor="#e0e0e0"/>
+            <text class="progress-text">{{item.progress}}/{{item.total}}</text>
+          </view>
+          <view class="unlock-date" wx:if="{{item.unlocked}}">
+            {{item.date}} 解锁
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 排行榜页面 -->
+  <view class="ranking-container" wx:if="{{activeTab === 1}}">
+    <!-- 排行榜类型选择 -->
+    <view class="ranking-types">
+      <view class="type-item {{rankingType === 'weekly' ? 'active' : ''}}" 
+            bindtap="changeRankingType" 
+            data-type="weekly">
+        本周
+      </view>
+      <view class="type-item {{rankingType === 'monthly' ? 'active' : ''}}" 
+            bindtap="changeRankingType" 
+            data-type="monthly">
+        本月
+      </view>
+      <view class="type-item {{rankingType === 'allTime' ? 'active' : ''}}" 
+            bindtap="changeRankingType" 
+            data-type="allTime">
+        总榜
+      </view>
+    </view>
+    
+    <!-- 好友排行榜 -->
+    <view class="ranking-section">
+      <view class="section-title">好友排行</view>
+      <view class="ranking-list">
+        <view class="ranking-item {{item.isCurrentUser ? 'current-user' : ''}}" 
+              wx:for="{{rankings.friends}}" 
+              wx:key="id">
+          <view class="rank-number">{{item.rank}}</view>
+          <image class="user-avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+          <view class="user-info">
+            <view class="user-name">{{item.name}}</view>
+            <view class="user-stats">
+              {{item.workouts}}次训练 · {{item.minutes}}分钟
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 全站排行榜 -->
+    <view class="ranking-section">
+      <view class="section-title">全站排行</view>
+      <view class="ranking-list">
+        <view class="ranking-item {{item.isCurrentUser ? 'current-user' : ''}}" 
+              wx:for="{{rankings.global}}" 
+              wx:key="id">
+          <view class="rank-number">{{item.rank}}</view>
+          <image class="user-avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+          <view class="user-info">
+            <view class="user-name">{{item.name}}</view>
+            <view class="user-stats">
+              {{item.workouts}}次训练 · {{item.minutes}}分钟
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

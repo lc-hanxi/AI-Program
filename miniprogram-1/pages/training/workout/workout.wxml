@@ -1,0 +1,89 @@
+<!-- pages/training/workout/workout.wxml -->
+<view class="container">
+  <!-- 训练进行中 -->
+  <block wx:if="{{!isWorkoutComplete}}">
+    <!-- 训练标题 -->
+    <view class="workout-header">
+      <view class="workout-title">{{workoutName}}</view>
+      <view class="workout-progress">
+        {{currentExerciseIndex + 1}}/{{exercises.length}} 动作
+      </view>
+    </view>
+    
+    <!-- 当前动作 -->
+    <view class="current-exercise">
+      <image class="exercise-image" src="{{exercises[currentExerciseIndex].image}}" mode="aspectFill"></image>
+      <view class="exercise-name">{{exercises[currentExerciseIndex].name}}</view>
+      <view class="exercise-muscle">{{exercises[currentExerciseIndex].muscle}}</view>
+      
+      <view class="set-info">
+        <text class="set-label">第 {{currentSetIndex + 1}}/{{exercises[currentExerciseIndex].sets}} 组</text>
+        <text class="rep-label">{{exercises[currentExerciseIndex].reps}}</text>
+      </view>
+    </view>
+    
+    <!-- 休息计时器 -->
+    <view class="rest-timer" wx:if="{{isResting}}">
+      <view class="timer-label">休息时间</view>
+      <view class="timer-value">{{restTimeRemaining}}秒</view>
+      <button class="skip-button" bindtap="skipRest">跳过</button>
+    </view>
+    
+    <!-- 组完成按钮 -->
+    <view class="action-area" wx:if="{{!isResting}}">
+      <button class="complete-button" bindtap="completeSet">完成本组</button>
+    </view>
+    
+    <!-- 组进度指示器 -->
+    <view class="set-progress">
+      <block wx:for="{{exercises[currentExerciseIndex].sets}}" wx:key="index">
+        <view class="set-indicator {{index < exercises[currentExerciseIndex].completedSets.length ? 'completed' : (index === currentSetIndex && !isResting ? 'current' : '')}}"></view>
+      </block>
+    </view>
+    
+    <!-- 训练动作列表 -->
+    <view class="exercise-list">
+      <view class="section-title">训练动作</view>
+      
+      <view class="exercise-item {{index === currentExerciseIndex ? 'current' : (index < currentExerciseIndex ? 'completed' : '')}}" 
+            wx:for="{{exercises}}" 
+            wx:key="id">
+        <view class="exercise-header">
+          <view class="exercise-status">
+            <text class="status-text" wx:if="{{index < currentExerciseIndex}}">已完成</text>
+            <text class="status-text current" wx:elif="{{index === currentExerciseIndex}}">进行中</text>
+            <text class="status-text" wx:else>待完成</text>
+          </view>
+          <view class="exercise-info">
+            <view class="exercise-name-small">{{item.name}}</view>
+            <view class="exercise-sets">{{item.completedSets.length}}/{{item.sets}} 组</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+  
+  <!-- 训练完成 -->
+  <block wx:else>
+    <view class="completion-container">
+      <view class="completion-icon">🎉</view>
+      <view class="completion-title">训练完成！</view>
+      <view class="completion-stats">
+        <view class="stat-item">
+          <text class="stat-value">{{workoutDuration}}</text>
+          <text class="stat-label">分钟</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{exercises.length}}</text>
+          <text class="stat-label">动作</text>
+        </view>
+        <view class="stat-item">
+                        <text class="stat-value">{{totalSets}}</text>
+          <text class="stat-label">组数</text>
+        </view>
+      </view>
+      
+      <button class="finish-button" bindtap="finishWorkout">完成</button>
+    </view>
+  </block>
+</view>

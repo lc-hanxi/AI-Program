@@ -1,0 +1,48 @@
+<!-- pages/training/history/history.wxml -->
+<view class="container">
+  <!-- 月份选择器 -->
+  <view class="month-selector">
+    <picker mode="selector" range="{{months}}" value="{{months.indexOf(currentMonth)}}" bindchange="onMonthChange">
+      <view class="month-picker">
+        <text class="month-text">{{currentMonth}}</text>
+        <text class="month-arrow">▼</text>
+      </view>
+    </picker>
+  </view>
+  
+  <!-- 训练历史列表 -->
+  <view class="history-list">
+    <block wx:if="{{workoutHistory.length > 0}}">
+      <view class="workout-item" 
+            wx:for="{{workoutHistory}}" 
+            wx:key="id"
+            bindtap="viewWorkoutDetail"
+            data-id="{{item.id}}">
+        <view class="workout-date">{{item.formattedDate}}</view>
+        <view class="workout-content">
+          <view class="workout-name">{{item.name}}</view>
+          <view class="workout-stats">
+            <view class="stat-item">
+              <text class="stat-value">{{item.duration}}</text>
+              <text class="stat-label">分钟</text>
+            </view>
+            <view class="stat-item">
+              <text class="stat-value">{{item.formattedExercises}}</text>
+              <text class="stat-label">动作</text>
+            </view>
+            <view class="stat-item">
+              <text class="stat-value">{{item.sets}}</text>
+              <text class="stat-label">组数</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+    
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{workoutHistory.length === 0}}">
+      <view class="empty-icon">📅</view>
+      <view class="empty-text">本月还没有训练记录</view>
+    </view>
+  </view>
+</view>

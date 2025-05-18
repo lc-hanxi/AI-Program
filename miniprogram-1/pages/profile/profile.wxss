@@ -1,0 +1,129 @@
+/* pages/profile/profile.wxss */
+.container {
+  padding: 0;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 用户信息区域样式 */
+.user-info {
+  width: 100%;
+  background-color: #4CAF50;
+  padding: 30rpx 20rpx;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.click-active {
+  opacity: 0.7;
+  transform: scale(0.98);
+  transition: all 0.2s;
+}
+
+.login-tip {
+  position: absolute;
+  right: 40rpx;
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.8);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  margin-right: 30rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+}
+
+.user-detail {
+  flex: 1;
+}
+
+.nickname {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+}
+
+.stats {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.stat-item {
+  margin-right: 40rpx;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  display: block;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 菜单列表样式 */
+.menu-list {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15rpx;
+  margin-top: 0;
+  padding: 0 20rpx;
+  box-sizing: border-box;
+}
+
+.menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30rpx 20rpx;
+  background-color: #fff;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  text-align: center;
+  height: 160rpx;
+  box-sizing: border-box;
+}
+
+.menu-item:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.menu-icon {
+  width: 60rpx;
+  height: 60rpx;
+  margin-bottom: 15rpx;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-text {
+  font-size: 30rpx;
+  color: #333;
+}
+
+.menu-icon {
+  width: 32rpx;
+  height: 32rpx;
+  opacity: 0.3;
+}
